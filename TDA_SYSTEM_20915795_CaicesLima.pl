@@ -68,11 +68,17 @@ getDrives(System, Drives) :-
     %makesystem/9
     makesystem(_,_,_,_,_,Drives,_,_,System).
 
+getUsers(System, Users):-
+    makesystem_,_,_,_,Users,_,_,System).
+
+
 setDrives(System, Drives, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, _, Trashcan, Paths, System),
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
 
-
+setUsers(System, Users, NewSystem) :-
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, _, Drives, Trashcan, Paths, System),
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
 
 % TDA Drive
 drive(Letter, Name, Cap,[Letter, Name, Cap]).
@@ -87,8 +93,23 @@ getLetter(Drive,Letter):-
 
 addDriveToDrives(Drives,NewDrive,[NewDrive|Drives]).
 
+%%%%%%%%%%%%%%%%%%
+
+% TDA USER
+
+user(UserName):-
+ string(UserName).
+
+%RF3
 systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
     drive(Letter,DriveName,Cap,NewDrive),
+    getDrives(System,Drives),
+    addDriveToDrives(Drives,NewDrive,NewDrives),
+    setDrives(System,NewDrives,NewSystem).
+
+%RF4
+systemRegister(System,UserName,NewSystem):-
+    drive(Letter,DriveName,Cap,NewUsers),
     getDrives(System,Drives),
     addDriveToDrives(Drives,NewDrive,NewDrives),
     setDrives(System,NewDrives,NewSystem).
