@@ -113,3 +113,11 @@ systemRegister(System,UserName,NewSystem):-
     getDrives(System,Drives),
     addDriveToDrives(Drives,NewDrive,NewDrives),
     setDrives(System,NewDrives,NewSystem).
+
+
+%RF4
+systemRegister(System,UserName,NewSystem):-
+    drive(Letter,DriveName,Cap,NewUsers),
+    getDrives(System,Drives),
+    addDriveToDrives(Drives,NewDrive,NewDrives),
+    setDrives(System,NewDrives,NewSystem).
