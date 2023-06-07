@@ -83,38 +83,20 @@ setUsers(System, Users, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
 
 
-getFirst([H|_],H).
-
-%existingLetter(Letter,Drives):-
-    %length([Drive])==1,
-%    getFirst(Drives,Drive)
-%    member(Letter,Drive).
-
-existingLetter(Letter,[Drive|_]):-
-    %length([Drive])==1,
-    member(Letter,Drive).
-
-existingLetter(Letter,[_|Drives]):-
-    %existingLetter(Letter,[Drive]);
-    existingLetter(Letter,Drives).
 
 %[["D","drive1",100],["C","drive2",500]]
-
-
-
-    
+   
 %%%%%%%%%%%%%%%%%%
 
 % TDA USER
 
-user(UserName,UserName):-
- string(UserName).
 
 %RF3
 systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
     drive(Letter,DriveName,Cap,NewDrive),
     getDrives(System,Drives),
     not(member(NewDrive,Drives)),
+    not(existingLetter(Letter,Drives)),
     addDriveToDrives(Drives,NewDrive,NewDrives),
     setDrives(System,NewDrives,NewSystem).
 
