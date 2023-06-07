@@ -1,4 +1,6 @@
 :- use_module(library(system)).
+:- use_module(tda_drive_20915795_CaicesLima).
+
 
 % unifica fecha y hora del sistema en un solo string
 fecha_y_hora_actual(FechaYHora) :-
@@ -69,7 +71,7 @@ getDrives(System, Drives) :-
     makesystem(_,_,_,_,_,Drives,_,_,System).
 
 getUsers(System, Users):-
-    makesystem_,_,_,_,Users,_,_,System).
+    makesystem(_,_,_,_,Users,_,_,_,System).
 
 
 setDrives(System, Drives, NewSystem) :-
@@ -80,44 +82,46 @@ setUsers(System, Users, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, _, Drives, Trashcan, Paths, System),
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
 
-% TDA Drive
-drive(Letter, Name, Cap,[Letter, Name, Cap]).
 
-/*
-drive(Letter, Name, Cap,[LetterMin, NameMin, Cap]):-
-    string_downcase(Letter,LetterMin),
-    string_downcase(Name,NameMin).
-*/
-getLetter(Drive,Letter):-
-    drive(Letter,_,_,Drive).
+getFirst([H|_],H).
 
-addDriveToDrives(Drives,NewDrive,[NewDrive|Drives]).
+%existingLetter(Letter,Drives):-
+    %length([Drive])==1,
+%    getFirst(Drives,Drive)
+%    member(Letter,Drive).
 
+existingLetter(Letter,[Drive|_]):-
+    %length([Drive])==1,
+    member(Letter,Drive).
+
+existingLetter(Letter,[_|Drives]):-
+    %existingLetter(Letter,[Drive]);
+    existingLetter(Letter,Drives).
+
+%[["D","drive1",100],["C","drive2",500]]
+
+
+
+    
 %%%%%%%%%%%%%%%%%%
 
 % TDA USER
 
-user(UserName):-
+user(UserName,UserName):-
  string(UserName).
 
 %RF3
 systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
     drive(Letter,DriveName,Cap,NewDrive),
     getDrives(System,Drives),
+    not(member(NewDrive,Drives)),
     addDriveToDrives(Drives,NewDrive,NewDrives),
     setDrives(System,NewDrives,NewSystem).
 
 %RF4
 systemRegister(System,UserName,NewSystem):-
-    drive(Letter,DriveName,Cap,NewUsers),
-    getDrives(System,Drives),
-    addDriveToDrives(Drives,NewDrive,NewDrives),
-    setDrives(System,NewDrives,NewSystem).
-
-
-%RF4
-systemRegister(System,UserName,NewSystem):-
-    drive(Letter,DriveName,Cap,NewUsers),
-    getDrives(System,Drives),
-    addDriveToDrives(Drives,NewDrive,NewDrives),
-    setDrives(System,NewDrives,NewSystem).
+    user(UserName,NewUser),
+    getUsers(System,Users),
+    not(member(NewUser,Users)),
+    append(Users,[NewUser],NewUsers),
+    setUsers(System,NewUsers,NewSystem).
