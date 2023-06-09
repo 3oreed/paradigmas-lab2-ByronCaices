@@ -18,3 +18,5 @@ existingLetter(Letter,[Drive|_]):-
 
 existingLetter(Letter,[_|Drives]):-
     existingLetter(Letter,Drives).
+
+%ttt
