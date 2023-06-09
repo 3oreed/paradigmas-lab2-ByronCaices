@@ -1,6 +1,8 @@
 :- use_module(library(system)).
 :- use_module(tda_drive_20915795_CaicesLima).
 :- use_module(tda_user_20915795_CaicesLima).
+:- use_module(tda_folder_20915795_CaicesLima).
+
 
 
 
@@ -72,6 +74,8 @@ system(NombreSystem,System):-
     string_lower(NombreSystem,NombreSystem2),
     makesystem(NombreSystem2,[],[],[],[],[],[],[],System).
 
+getDate(System,Date):-
+    makesystem(_,Date,_,_,_,_,_,_,_,System).
 
 getDrives(System, Drives) :-
     %makesystem/10
@@ -82,6 +86,13 @@ getUsers(System, Users):-
 
 getLogedUser(System, LogedUser):-
     makesystem(_,_,LogedUser,_,_,_,_,_,_,System).
+
+getCurrentPath(System, CurrentPath):-
+    makesystem(_,_,_,CurrentPath,_,_,_,_,_,System).
+
+getContent(System,Content):-
+    makesystem(_,_,_,_,_,_,_,_,Content,System).
+
 
 
 setDrives(System, Drives, NewSystem) :-
@@ -101,6 +112,11 @@ setCurrentPath(System, NewPath, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, _, Users, Drives, Trashcan, Paths,  Content,System),
     makesystem(SystemName,SystemDate, LogedUser, NewPath, Users, Drives, Trashcan, Paths,  Content,NewSystem).
 
+setContent(System, NewContent, NewSystem) :-
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  _,System),
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  NewContent,NewSystem).
+
+
 
 
 
@@ -109,7 +125,23 @@ setCurrentPath(System, NewPath, NewSystem) :-
    
 %%%%%%%%%%%%%%%%%%
 
-% TDA USER
+% TDA Folder
+
+/* 
+DOMINIO:
+- folder-name (string)
+- create-date (date)
+- mod-date (date)
+- location (string)
+- creator (user)
+- password (string)
+ */
+
+
+
+
+
+
 
 
 %RF3
@@ -147,7 +179,22 @@ systemSwitchDrive(System,Letter,NewSystem):-
     string_concat(LetterMin,":/",NewPath),
     setCurrentPath(System,NewPath,NewSystem).
 
+%RF8 mkdir
 
+% Creamos un folder desde system
+sysFolder(System,FolderName,[FolderNameMin,CreateDate,ModDate,Location,Creator]):-
+    not(getLogedUser(System, [])),
+    string_lower(FolderName,FolderNameMin),
+    getDate(System,CreateDate),
+    getDate(System,ModDate),
+    getCurrentPath(System,Location),
+    getLogedUser(System,Creator).
+
+systemMkdir(System,FolderName,NewSystem):-
+    sysFolder(System,FolderName,Folder),
+    getContent(System,Content),
+    append(Content,[Folder],NewContent),
+    setContent(System,NewContent,NewSystem).
 
 
 
