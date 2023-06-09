@@ -1,5 +1,7 @@
 :- use_module(library(system)).
 :- use_module(tda_drive_20915795_CaicesLima).
+:- use_module(tda_user_20915795_CaicesLima).
+
 
 
 % unifica fecha y hora del sistema en un solo string
@@ -82,6 +84,16 @@ setUsers(System, Users, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, _, Drives, Trashcan, Paths, System),
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
 
+setLogin(System, User, NewSystem) :-
+    makesystem(SystemName,SystemDate, _, CurrentPath, Users, Drives, Trashcan, Paths, System),
+    makesystem(SystemName,SystemDate, User, CurrentPath, Users, Drives, Trashcan, Paths, NewSystem).
+
+setCurrentPath(System, NewPath, NewSystem) :-
+    makesystem(SystemName,SystemDate, LogedUser, _, Users, Drives, Trashcan, Paths, System),
+    makesystem(SystemName,SystemDate, LogedUser, NewPath, Users, Drives, Trashcan, Paths, NewSystem).
+
+
+
 
 
 %[["D","drive1",100],["C","drive2",500]]
@@ -104,6 +116,16 @@ systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
 systemRegister(System,UserName,NewSystem):-
     user(UserName,NewUser),
     getUsers(System,Users),
-    not(member(NewUser,Users)),
-    append(Users,[NewUser],NewUsers),
+    not(member(UserName,Users)),
+    append(Users,NewUser,NewUsers),
     setUsers(System,NewUsers,NewSystem).
+
+%RF5
+systemLogin(System,UserName,NewSystem):-
+    user(UserName,LogedUser),
+    setLogin(System,LogedUser,NewSystem).
+
+%RF6
+systemLogout(System,NewSystem):-
+    setLogin(System,[],NewSystem).
+
