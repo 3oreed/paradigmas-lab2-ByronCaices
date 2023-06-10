@@ -5,6 +5,7 @@
 
 
 drive(Letter, Name, Cap,[LetterMin, NameMin, Cap]):-
+    string_length(Letter,1),
     string_lower(Letter,LetterMin),
     string_lower(Name,NameMin).
 

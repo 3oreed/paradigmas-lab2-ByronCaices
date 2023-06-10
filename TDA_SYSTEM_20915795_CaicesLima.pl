@@ -72,7 +72,7 @@ makesystem(SystemName,SystemDate,LogedUser,CurrentPath,Users,Drives,Trashcan,Pat
 system(NombreSystem,System):-
     %makesystem/10
     string_lower(NombreSystem,NombreSystem2),
-    makesystem(NombreSystem2,[],[],[],[],[],[],[],System).
+    makesystem(NombreSystem2,[],"",[],[],[],[],[],System).
 
 getDate(System,Date):-
     makesystem(_,Date,_,_,_,_,_,_,_,System).
@@ -89,6 +89,9 @@ getLogedUser(System, LogedUser):-
 
 getCurrentPath(System, CurrentPath):-
     makesystem(_,_,_,CurrentPath,_,_,_,_,_,System).
+
+getPaths(System,Paths):-
+    makesystem(_,_,_,_,_,_,_,Paths,_,System).
 
 getContent(System,Content):-
     makesystem(_,_,_,_,_,_,_,_,Content,System).
@@ -112,14 +115,13 @@ setCurrentPath(System, NewPath, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, _, Users, Drives, Trashcan, Paths,  Content,System),
     makesystem(SystemName,SystemDate, LogedUser, NewPath, Users, Drives, Trashcan, Paths,  Content,NewSystem).
 
+setPaths(System, NewPaths, NewSystem) :-
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, _,  Content,System),
+    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, NewPaths,  Content,NewSystem).
+
 setContent(System, NewContent, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  _,System),
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  NewContent,NewSystem).
-
-
-
-
-
 
 %[["D","drive1",100],["C","drive2",500]]
    
@@ -137,13 +139,6 @@ DOMINIO:
 - password (string)
  */
 
-
-
-
-
-
-
-
 %RF3
 systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
     drive(Letter,DriveName,Cap,NewDrive),
@@ -151,7 +146,13 @@ systemAddDrive(System,Letter,DriveName,Cap,NewSystem):-
     not(member(NewDrive,Drives)),
     not(existingLetter(Letter,Drives)),
     addDriveToDrives(Drives,NewDrive,NewDrives),
-    setDrives(System,NewDrives,NewSystem).
+    setDrives(System,NewDrives,NewSystem0),
+    
+    getPaths(System,Paths), %obtiene paths del system
+    string_concat(Letter,":/",NewPath0),
+    string_lower(NewPath0,NewPath),
+    append(Paths,[NewPath],NewPaths), %agrega NewPath a los paths
+    setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system
 
 %RF4
 systemRegister(System,UserName,NewSystem):-
@@ -161,14 +162,23 @@ systemRegister(System,UserName,NewSystem):-
     append(Users,NewUser,NewUsers),
     setUsers(System,NewUsers,NewSystem).
 
+systemRegister(System,UserName,System):-
+    getUsers(System,Users),
+    member(UserName,Users).
+
 %RF5
 systemLogin(System,UserName,NewSystem):-
     getLogedUser(System,[]),
     user(UserName,LogedUser),
     setLogin(System,LogedUser,NewSystem).
 
+systemLogin(System,UserName,System):-
+    getLogedUser(System,LogedUser),
+    user(UserName,LogedUser).
+
 %RF6
 systemLogout(System,NewSystem):-
+    not(getLogedUser(System,[])),
     setLogin(System,[],NewSystem).
 
 %RF7
@@ -191,10 +201,28 @@ sysFolder(System,FolderName,[FolderNameMin,CreateDate,ModDate,Location,Creator])
     getLogedUser(System,Creator).
 
 systemMkdir(System,FolderName,NewSystem):-
-    sysFolder(System,FolderName,Folder),
-    getContent(System,Content),
-    append(Content,[Folder],NewContent),
-    setContent(System,NewContent,NewSystem).
+
+    %Crea nuevo path
+    sysFolder(System,FolderName,Folder), %crea folder
+    getFolderName(Folder,FolderNameMin),
+    getLocation(Folder,Location),
+    string_concat(Location,FolderNameMin,NewPath), %crea NewPath
+
+    %Agrega folder a contenido del sistema
+    getContent(System,Content), %obtiene el contenido del system
+    append(Content,[Folder],NewContent),  %agrega folder al contenido
+    setContent(System,NewContent,NewSystem0), %setea new content
+
+    %Del system resultando ahora debe agregar la nueva ruta a los paths del sistema
+    getPaths(System,Paths), %obtiene paths del system
+    append(Paths,[NewPath],NewPaths), %agrega NewPath a los paths
+    setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system
+
+
+
+    
+
+
 
 
 
