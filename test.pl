@@ -40,3 +40,21 @@ gana(P1,P2):-
     personaje(P1,Ki1,_,_),
     personaje(P2,Ki2,_,_),
     Ki1 > Ki2.
+
+systemAddFile(System,FileName,NewSystem):-
+
+    %Crea nuevo path
+    sysFile(System,FileName,File), %crea File
+    getFileName(File,FileNameMin),
+    getFileLocation(File,Location),
+    string_concat(Location,FileNameMin,NewPath), %crea NewPath
+
+    %Agrega File a contenido del sistema
+    getContent(System,Content), %obtiene el contenido del system
+    append(Content,[File],NewContent),  %agrega File al contenido
+    setContent(System,NewContent,NewSystem0), %setea new content
+
+    %Del system resultando ahora debe agregar la nueva ruta a los paths del sistema
+    getPaths(System,Paths), %obtiene paths del system
+    append(Paths,[NewPath],NewPaths), %agrega NewPath a los paths
+    setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system

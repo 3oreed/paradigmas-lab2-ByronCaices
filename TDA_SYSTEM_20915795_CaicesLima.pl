@@ -2,6 +2,7 @@
 :- use_module(tda_drive_20915795_CaicesLima).
 :- use_module(tda_user_20915795_CaicesLima).
 :- use_module(tda_folder_20915795_CaicesLima).
+:- use_module(tda_file_20915795_CaicesLima).
 
 
 
@@ -219,11 +220,119 @@ systemMkdir(System,FolderName,NewSystem):-
     setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system
 
 
+%RF9 Cd
+
+string_contains(String, SubString):-
+    sub_string(String, _, _, _, SubString).
+
+split_path(Path, Parts):-
+    split_string(Path, "/", "", Parts).
+
+eliminar_primero([_|T], T).
+
+getFirst([X|_],X).
+
+string_join([], _, '').
+
+string_join([X], _, X):- !.
+
+string_join([X|Xs], Delimiter, Result):-
+    string_join(Xs, Delimiter, Rest),
+    string_concat(X, Delimiter, Concatenated),
+    string_concat(Concatenated, Rest, Result).
+
+ruta_padre(Path, ParentPath):-
+    split_string(Path, "/", "", PathList),
+    reverse(PathList, ReversedPathList),
+    eliminar_primero(ReversedPathList,NewReversedPathList),
+    reverse(NewReversedPathList,NewPathList),
+    string_join(NewPathList,"/",ParentPath).
+
+ruta_raiz(Path, Root):-
+    split_string(Path, "/", "", PathList),
+    getFirst(PathList,Root0),
+    string_concat(Root0,"/",Root).
+    
+
+% currentpath: "c:/folder1/"
+% input: "/folder2" 
+% resultado: "c:/folder1/folder2/"
+systemCd(System,FolderPath,NewSystem):-
+    sub_string(FolderPath, 0, 1, _, PrimerElemento),
+    string_contains(PrimerElemento,"/"),
+    sub_string(FolderPath, 1, _, 0, FormatPath),
+    getCurrentPath(System,CurrentPath),
+    string_concat(CurrentPath,FormatPath,NewPath0),
+    string_concat(NewPath0,"/",NewPath),
+    setCurrentPath(System,NewPath,NewSystem).
+
+% currentpath: "c:/"
+% folderpath: "Folder1/Folder11"
+% resultado: "c:/folder1/folder11"
+systemCd(System,FolderPath,NewSystem):-
+    not(string_length(FolderPath,1)),
+    %string_contains(FolderPath,"/"),
+    string_concat(FolderPath,"/",FolderPath0),
+    getCurrentPath(System,CurrentPath),
+    string_lower(FolderPath0,FolderPathMin),
+    string_concat(CurrentPath,FolderPathMin,NewPath),
+    setCurrentPath(System,NewPath,NewSystem).
+
+% currentpath: "c:/"
+% input: "d:/folder1" (Si contiene : entonces uso este)
+% resultado: "d:/folder1/"
+systemCd(System,NewPath,NewSystem):-
+    string_contains(NewPath,":"),
+    setCurrentPath(System,NewPath,NewSystem).
+
+% currentpath: "c:/folder1/folder11/"
+% input: ".." 
+% resultado: "c:/folder1/"
+systemCd(System,Input,NewSystem):-
+    string_contains(Input,".."),
+    getCurrentPath(System,CurrentPath),
+    ruta_padre(CurrentPath,ParentPath),
+    setCurrentPath(System,ParentPath,NewSystem).
+
+% currentpath: "c:/folder1/"
+% input: "/" 
+% resultado: "c:/"
+systemCd(System,Input,NewSystem):-
+    string_contains(Input,"/"),
+    string_length(Input,1),
+    getCurrentPath(System,CurrentPath),
+    ruta_raiz(CurrentPath,Root),
+    setCurrentPath(System,Root,NewSystem).
+
 
     
 
+%RF10
+
+sysFile(System,File,[FileName,CreateDate,ModDate,Location,Creator,Text]):-
+    not(getLogedUser(System, [])),
+    getFileName(File,FileName),
+    getText(File,Text),
+    getDate(System,CreateDate),
+    getDate(System,ModDate),
+    getCurrentPath(System,Location),
+    getLogedUser(System,Creator).
 
 
+systemAddFile(System,File,NewSystem):-
 
+    %Crea nuevo path
+    sysFile(System,File,SysFile), %crea File
+    getFileName(SysFile,FileNameMin),
+    getFileLocation(SysFile,Location),
+    string_concat(Location,FileNameMin,NewPath), %crea NewPath
 
+    %Agrega File a contenido del sistema
+    getContent(System,Content), %obtiene el contenido del system
+    append(Content,[SysFile],NewContent),  %agrega File al contenido
+    setContent(System,NewContent,NewSystem0), %setea new content
 
+    %Del system resultando ahora debe agregar la nueva ruta a los paths del sistema
+    getPaths(System,Paths), %obtiene paths del system
+    append(Paths,[NewPath],NewPaths), %agrega NewPath a los paths
+    setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system
