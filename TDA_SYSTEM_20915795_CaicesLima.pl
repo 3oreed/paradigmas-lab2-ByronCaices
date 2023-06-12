@@ -1,3 +1,6 @@
+
+
+:- module(tda_system_20915795_CaicesLima, [user/2]).
 :- use_module(library(system)).
 :- use_module(tda_drive_20915795_CaicesLima).
 :- use_module(tda_user_20915795_CaicesLima).
@@ -262,7 +265,8 @@ systemCd(System,FolderPath,NewSystem):-
     string_contains(PrimerElemento,"/"),
     sub_string(FolderPath, 1, _, 0, FormatPath),
     getCurrentPath(System,CurrentPath),
-    string_concat(CurrentPath,FormatPath,NewPath0),
+    ruta_raiz(CurrentPath,Root),
+    string_concat(Root,FormatPath,NewPath0),
     string_concat(NewPath0,"/",NewPath),
     setCurrentPath(System,NewPath,NewSystem).
 
@@ -304,9 +308,6 @@ systemCd(System,Input,NewSystem):-
     ruta_raiz(CurrentPath,Root),
     setCurrentPath(System,Root,NewSystem).
 
-
-    
-
 %RF10
 
 sysFile(System,File,[FileName,CreateDate,ModDate,Location,Creator,Text]):-
@@ -336,3 +337,46 @@ systemAddFile(System,File,NewSystem):-
     getPaths(System,Paths), %obtiene paths del system
     append(Paths,[NewPath],NewPaths), %agrega NewPath a los paths
     setPaths(NewSystem0,NewPaths,NewSystem). %setea newpaths del system
+
+
+%RF11 Del
+
+/* 
+2 ?- select([2,3,4],[[2,35,6],[2,3,4,5],[2,3,4],[7,6,8,8]],L).
+L = [[2, 35, 6], [2, 3, 4, 5], [7, 6, 8, 8]]  
+*/
+
+stringEqual(String1, String2):-
+    String1 == String2.
+
+getItemName(Item,ItemName):-
+    getFileName(Item,ItemName).
+
+getItemName(Item,ItemName):-
+    getFolderName(Item,ItemName).
+
+searchItem([Item|_],ItemName,Item):-
+    getItemName(Item,ItemName), !.
+
+searchItem([_|Items],ItemName,Item):-
+    searchItem(Items,ItemName,Item).
+
+existingItem(System,Item):-
+    getFileLocation(Item,Location),
+    getCurrentPath(System,CurrentPath),
+    stringEqual(Location,CurrentPath).
+
+existingItem(System,Item):-
+    getFolderLocation(Item,Location),
+    getCurrentPath(System,CurrentPath),
+    stringEqual(Location,CurrentPath).
+
+systemDel(System,FileName,NewSystem):-
+    getContent(System,Content),
+    searchItem(Content,FileName,File),
+    existingItem(System,File), %verifica si el file existe en la ruta actual del sistema
+    select(File,Content,NewContent),
+    setContent(System,NewContent,NewSystem).
+
+
+%[["folder1", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/", ["user1"]], ["folder2", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/", ["user1"]],["folder11", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/folder1/", ["user1"]]
