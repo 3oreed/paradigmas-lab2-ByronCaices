@@ -1,6 +1,6 @@
 
 
-:- module(tda_system_20915795_CaicesLima, [user/2]).
+%:- module(tda_system_20915795_CaicesLima, [user/2]).
 :- use_module(library(system)).
 :- use_module(tda_drive_20915795_CaicesLima).
 :- use_module(tda_user_20915795_CaicesLima).
@@ -267,8 +267,16 @@ systemCd(System,FolderPath,NewSystem):-
     getCurrentPath(System,CurrentPath),
     ruta_raiz(CurrentPath,Root),
     string_concat(Root,FormatPath,NewPath0),
-    string_concat(NewPath0,"/",NewPath),
-    setCurrentPath(System,NewPath,NewSystem).
+    %string_concat(NewPath0,"/",NewPath),
+    setCurrentPath(System,NewPath0,NewSystem).
+
+% currentpath: "c:/"
+% input: "d:/folder1" (Si contiene : entonces uso este)
+% resultado: "d:/folder1/"
+systemCd(System,NewPath,NewSystem):-
+    string_lower(NewPath,NewPath0),
+    string_contains(NewPath,":"),
+    setCurrentPath(System,NewPath0,NewSystem).
 
 % currentpath: "c:/"
 % folderpath: "Folder1/Folder11"
@@ -282,12 +290,7 @@ systemCd(System,FolderPath,NewSystem):-
     string_concat(CurrentPath,FolderPathMin,NewPath),
     setCurrentPath(System,NewPath,NewSystem).
 
-% currentpath: "c:/"
-% input: "d:/folder1" (Si contiene : entonces uso este)
-% resultado: "d:/folder1/"
-systemCd(System,NewPath,NewSystem):-
-    string_contains(NewPath,":"),
-    setCurrentPath(System,NewPath,NewSystem).
+
 
 % currentpath: "c:/folder1/folder11/"
 % input: ".." 
@@ -374,6 +377,8 @@ existingItem(System,Item):-
 systemDel(System,FileName,NewSystem):-
     getContent(System,Content),
     searchItem(Content,FileName,File),
+    %getTrash
+    %append a trash
     existingItem(System,File), %verifica si el file existe en la ruta actual del sistema
     select(File,Content,NewContent),
     setContent(System,NewContent,NewSystem).
