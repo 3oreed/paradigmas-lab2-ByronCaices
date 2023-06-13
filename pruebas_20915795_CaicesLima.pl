@@ -46,5 +46,6 @@ system("newSystem", S1), systemRegister(S1, "user1", S2), systemLogin(S2, "user1
 
 % ############# Casos que deben retornar false ############# %
 
+%intenta borrar un file inexistente en la ruta actual del sistema
 %system("mySystem",S1),systemAddDrive(S1,"C","Drive1",100,S2),systemAddDrive(S2,"K","Drive2",200,S3),systemAddDrive(S3,"D","Drive3",15000,S4),systemRegister(S4,"user1",S5),systemRegister(S5,"user2",S6),systemRegister(S6,"user3",S7),systemLogin(S7,"User1",S8),systemLogout(S8,S9),systemLogin(S9,"USER2",S10),systemSwitchDrive(S10,"D",S11),systemMkdir(S11,"folderA",S12),systemCd(S12,"folderA",S13),systemMkdir(S13,"folderAA",S14),systemCd(S14,"/",S15),systemMkdir(S15,"FolderB",S16),systemCd(S16,"D:/folderb/",S17),file( "file1.txt", "hello world", F1),file( "file2.txt", "hellooooooo world", F2),systemAddFile(S17,F1,S18),systemAddFile(S18,F2,S19),systemSwitchDrive(S19,"C",S20),file("file3.txt","labprolog2",F3),systemAddFile(S20,F3,S21),systemDel(S21,"file2.txt",S22).
 */
