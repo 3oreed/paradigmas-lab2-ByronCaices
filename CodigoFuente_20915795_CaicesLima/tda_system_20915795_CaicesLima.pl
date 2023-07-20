@@ -100,8 +100,7 @@ getPaths(System,Paths):-
 getContent(System,Content):-
     makesystem(_,_,_,_,_,_,_,_,Content,System).
 
-getTrash(System,Trashcan):-
-    makesystem(_,_,_,_,_,_,Trashcan,_,_,System).
+
 
 setDrives(System, Drives, NewSystem) :-
 %/9
@@ -127,10 +126,6 @@ setPaths(System, NewPaths, NewSystem) :-
 setContent(System, NewContent, NewSystem) :-
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  _,System),
     makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, Trashcan, Paths,  NewContent,NewSystem).
-
-setTrash(System, NewTrash, NewSystem) :-
-    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, _, Paths,  Content,System),
-    makesystem(SystemName,SystemDate, LogedUser, CurrentPath, Users, Drives, NewTrash, Paths,  Content,NewSystem).
 
 %[["D","drive1",100],["C","drive2",500]]
    
@@ -306,15 +301,6 @@ systemCd(System,Input,NewSystem):-
     ruta_padre(CurrentPath,ParentPath),
     setCurrentPath(System,ParentPath,NewSystem).
 
-% currentpath: "c:/folder1/folder11/"
-% input: "." 
-% resultado: "c:/folder1/folder11/"
-systemCd(System,Input,NewSystem):-
-    string_contains(Input,"."),
-    getCurrentPath(System,CurrentPath),
-    ruta_padre(CurrentPath,ParentPath),
-    setCurrentPath(System,ParentPath,NewSystem).
-
 % currentpath: "c:/folder1/"
 % input: "/" 
 % resultado: "c:/"
@@ -392,33 +378,10 @@ systemDel(System,FileName,NewSystem):-
     getContent(System,Content),
     searchItem(Content,FileName,File),
     %getTrash
-    getTrash(System,Trashcan),
     %append a trash
-    append(Trashcan,[File],NewTrash),
-    %setTrash(System,)
-    setTrash(System,NewTrash,NewSystem0),
-
     existingItem(System,File), %verifica si el file existe en la ruta actual del sistema
     select(File,Content,NewContent),
-    setContent(NewSystem0,NewContent,NewSystem).
-
-% busco el archivo en la ruta actual
-% creo file copia y modifico su location
-% resultado de ese file lo pongo en el content del sistema
-
-systemCopy(System,ItemName,TargetPath,NewSystem):-
-    %copy files
-    getContent(System,Content),
-    searchItem(Content,ItemName,File),
-    string_concat(TargetPath,ItemName,NewPath), %Al copiar un archivo se añadira un nuevo path al system
-    setFileLocation(File,TargetPath,NewFile), %El item quedará en target path
-    append(Content,[NewFile],NewContent),
-    setContent(System,NewContent,NewSystem0),
-    getPaths(NewSystem0,Paths),
-    append(Paths,NewPath,NewPaths),
-    setPaths(NewSystem0,NewPaths,NewSystem).
-    
-
+    setContent(System,NewContent,NewSystem).
 
 
 %[["folder1", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/", ["user1"]], ["folder2", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/", ["user1"]],["folder11", '2023-06-11 01:51:33', '2023-06-11 01:51:33', "c:/folder1/", ["user1"]]

@@ -1,5 +1,5 @@
 
-:- module(tda_file_20915795_CaicesLima, [file/7,file/3,getFileLocation/2,getFileName/2,getText/2,setFileLocation/3]).
+:- module(tda_file_20915795_CaicesLima, [file/7,file/3,getFileLocation/2,getFileName/2,getText/2]).
 
 % TDA File
 %File/6
@@ -23,7 +23,3 @@ getFileName(File,Name):-
 
 getText(File,Text):-
     file(_,_,_,_,_,Text,File).
-
-setFileLocation(File,NewLocation,NewFile):-
-    file(FileName,CreateDate,ModDate,_,Creator,Text,File),
-    file(FileName,CreateDate,ModDate,NewLocation,Creator,Text,NewFile).
