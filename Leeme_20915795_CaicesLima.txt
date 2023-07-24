@@ -1,0 +1,6 @@
+ALGUNAS OBSERVACIONES SOBRE EL FUNCIONAMIENTO DEL PROGRAMA:
+
+Es esencial asegurarnos de que todos los TDA y el archivo de prueba se encuentren en la misma carpeta para asegurar su funcionamiento adecuado. Después de confirmar esto, abrimos el archivo de pruebas y se sugiere usar el comando “set_prolog_flag(answer_write_options,[max_depth(0)]).” en la consola de consultas de Prolog, para una correcta visualización de los resultados.
+Para utilizar el programa, debemos realizar las consultas en la consola proporcionada por el intérprete Swi-Prolog. Por ejemplo, si queremos generar un sistema, deberíamos hacer una consulta en la sección de consultas de esta forma: system("newSystem", S1). Esto consultará el predicado system, devolviendo True y unificando el sistema resultante
+Posibles errores: 
+Un error que podría surgir al usar este programa podría deberse a introducir datos incorrectos en las consultas del programa. Sin embargo, el script de prueba funciona adecuadamente.

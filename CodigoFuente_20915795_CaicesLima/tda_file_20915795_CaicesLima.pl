@@ -2,10 +2,11 @@
 :- module(tda_file_20915795_CaicesLima, [file/7,file/3,getFileLocation/2,getFileName/2,getFileText/2,setFileLocation/3,setFileName/3]).
 
 % TDA File
-%File/6
-/* File(FileName,CreateDate,ModDate,Location,Creator,[FileNameMin,CreateDate,ModDate,LocationMin,Creator]):-
-    string_lower(FileName,FileNameMin),
-    string_lower(Location,LocationMin). */
+% Descripcion: Predicado que define un file. 
+% Dominio: FileName,CreateDate,ModDate,Location,Creator,Text
+% Metas Primarias: file
+% Metas Secundarias: string,string_lower
+
 
 
 file(FileName,CreateDate,ModDate,Location,Creator,Text,[FileName,CreateDate,ModDate,Location,Creator,Text]).

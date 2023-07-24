@@ -967,8 +967,8 @@ mergeLists(Lista1, Lista2, ResultadoFinal) :-
     append(Lista1, Lista2, ResultadoAppend),
     remove_duplicates(ResultadoAppend, ResultadoFinal).
 
-writeList(List) :-
-    forall(member(Item, List), writeln(Item)).
+/* writeList(List) :-
+    forall(member(Item, List), writeln(Item)). */
 
 % ELimina un FOLDER y su contenido y no agrega a Trashcan
 systemSupr(System,FileName,NewSystem):-

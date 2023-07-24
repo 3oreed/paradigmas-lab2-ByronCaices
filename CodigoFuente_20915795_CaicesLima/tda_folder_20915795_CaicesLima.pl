@@ -2,18 +2,12 @@
 :- module(tda_folder_20915795_CaicesLima, [folder/6,getFolderLocation/2,getFolderName/2,setFolderLocation/3,setFolderName/3]).
 
 % TDA Folder
-%folder/6
-/* folder(FolderName,CreateDate,ModDate,Location,Creator,[FolderNameMin,CreateDate,ModDate,LocationMin,Creator]):-
-    string_lower(FolderName,FolderNameMin),
-    string_lower(Location,LocationMin). */
+% Descripcion: Predicado que define un folder. 
+% Dominio: FolderName,CreateDate,ModDate,Location,Creator
+% Metas Primarias: folder
 
 folder(FolderName,CreateDate,ModDate,Location,Creator,[FolderName,CreateDate,ModDate,Location,Creator]).
 
-/* getLocation(Folder,Location):-
-    folder(_,_,_,Location,_,Folder).
-
-getFolderName(Folder,Name):-
-    folder(Name,_,_,_,_,Folder). */
 
 makefolder(FolderName,CreateDate,ModDate,Location,Creator,[FolderName,CreateDate,ModDate,Location,Creator]).
 
