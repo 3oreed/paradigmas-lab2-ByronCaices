@@ -1,0 +1,5 @@
+ALGUNAS OBSERVACIONES SOBRE EL FUNCIONAMIENTO DEL PROGRAMA:
+
+el script de pruebas puede ser consultado copiando las consultas que hay escritas como comentarios.
+
+Para los RF implementados se hicieron las pruebas

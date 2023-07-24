@@ -10,12 +10,11 @@
 9	md	1
 10	cd	1
 11	add-file	1
-12	del	0.5
-13	rd	0
-14	copy	0
-15	move	0
-16	ren	0
-17	dir	0
+12	del	1
+14	copy	1
+15	move	1
+16	ren	1
+17	dir	0.75
 18	format	0
 19	encrypt	0
 20	decrypt	0
